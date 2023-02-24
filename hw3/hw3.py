@@ -2,7 +2,8 @@ from socket import *
 # Create a TCP server socket
 # Code Start
 serverSocket = socket(AF_INET, SOCK_STREAM)
-serverSocket.bind(('', 300))
+serverSocket.bind(('localhost', 300))
+serverSocket.listen(1)
 # Code End
 while True:
     # Establish the connection
@@ -13,6 +14,7 @@ while True:
         filename = message.split()[1]
         f = open("./html_files/" + filename[1:])
         outputdata = f.read()
+
         # Send HTTP OK and the Set-Cookie header into the socket
         # set the cookie to whatever value you'd like
         # Code Start
@@ -28,17 +30,19 @@ while True:
         # Code Start
         connectionSocket.close()
         # Code End
-    except IOError:
+    except IOError as e:
         # Send HTTP NotFound response
         # Code Start
         response = 'HTTP/1.1 404 Not Found\r\n'
         response += 'Set-Cookie: cookie=cookie\r\n'
         response += '\r\n'
-        response += open('./html_files/not-found.html').read()
+        response += "<html><body><h1>404 Not Found</h1></body></html>"
+
         connectionSocket.send(response.encode())
         # Code End
         # Close the socket
         # Code Start
         connectionSocket.close()
+        print('Error:', e)
         # Code End
 serverSocket.close()
