@@ -14,12 +14,12 @@ def checksum(str):
     countTo = (len(str) / 2) * 2
     count = 0
     while count < countTo:
-        thisVal = ord(str[count + 1]) * 256 + ord(str[count])
+        thisVal = str[count + 1] * 256 + str[count]
         csum = csum + thisVal
         csum = csum & 0xFFFFFFFF
         count = count + 2
     if countTo < len(str):
-        csum = csum + ord(str[len(str) - 1])
+        csum = csum + str[len(str) - 1]
         csum = csum & 0xFFFFFFFF
     csum = (csum >> 16) + (csum & 0xFFFF)
     csum = csum + (csum >> 16)
@@ -63,7 +63,6 @@ def sendOnePing(mySocket, destAddr, ID):
         "bbHHh", icmpEchoRequestType, icmpEchoRequestCode, myChecksum, ID, 1
     )
     data = struct.pack("d", time.time())
-    print(header, data)
     # Calculate the checksum on the data and the dummy header.
     myChecksum = checksum(header + data)
     # Get the right checksum, and put in the header
@@ -98,9 +97,9 @@ def ping(host, timeout=1):
     # Send ping requests to a server separated by approximately one second
     while 1:
         delay = doOnePing(dest, timeout)
-    print(delay)
+        print(delay)
     time.sleep(1)  # one second
     return delay
 
 
-ping("www.google.com")
+ping("www.australia.gov.au")
