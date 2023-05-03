@@ -12,16 +12,15 @@ while True:
     try:
         message = connectionSocket.recv(1024).decode()
         filename = message.split()[1]
-        f = open("./html_files/" + filename[1:])
+        f = open("./hw3/html_files/" + filename[1:])
         outputdata = f.read()
 
         # Send HTTP OK and the Set-Cookie header into the socket
         # set the cookie to whatever value you'd like
         # Code Start
-        response = 'HTTP/1.1 200 OK\r\n'
-        response += 'Set-Cookie: cookie=cookie\r\n'
-        response += '\r\n'
-        response += outputdata
+        connectionSocket.send('HTTP/1.1 200 OK\r\n'.encode())
+        connectionSocket.send('Set-Cookie: cookie=cookie\r\n'.encode())
+        connectionSocket.send('\r\n'.encode())
         # Code End
         # Send the content of the requested file to the client
         for i in range(0, len(outputdata)):
@@ -33,12 +32,11 @@ while True:
     except IOError as e:
         # Send HTTP NotFound response
         # Code Start
-        response = 'HTTP/1.1 404 Not Found\r\n'
-        response += 'Set-Cookie: cookie=cookie\r\n'
-        response += '\r\n'
-        response += "<html><body><h1>404 Not Found</h1></body></html>"
+        connectionSocket.send('HTTP/1.1 404 Not Found\r\n'.encode())
+        connectionSocket.send('Set-Cookie: cookie=cookie\r\n'.encode())
+        connectionSocket.send('\r\n'.encode())
+        connectionSocket.send(open("./hw3/html_files/NotFound.html").read().encode())
 
-        connectionSocket.send(response.encode())
         # Code End
         # Close the socket
         # Code Start
